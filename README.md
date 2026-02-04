@@ -1,6 +1,27 @@
 # Todo List - Aplicação Full Stack
 
+[![CI/CD](https://github.com/dinei84/webtodo/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/dinei84/webtodo/actions)
+[![Deploy](https://img.shields.io/badge/deploy-vercel-black)](https://vercel.com)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.2-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://react.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-10.7-ffca28.svg)](https://firebase.google.com/)
+
 Uma aplicação moderna de gerenciamento de tarefas (Todo List) construída com **Spring Boot** e **React**, integrada com **Firebase** para autenticação e armazenamento de dados.
+
+## 🌐 Demo
+
+- **Frontend**: [https://seu-app.vercel.app](https://seu-app.vercel.app) _(Configure após deploy)_
+- **Backend API**: [https://seu-backend.onrender.com](https://seu-backend.onrender.com) _(Configure após deploy)_
+
+## 📚 Documentação
+
+- [🚀 Guia de Deploy Rápido](QUICK_DEPLOY.md) - Comece a fazer deploy em 20 minutos
+- [📖 Guia Completo de Deploy](DEPLOYMENT.md) - Instruções detalhadas
+- [🤝 Como Contribuir](CONTRIBUTING.md) - Guidelines para contribuidores
+- [🔒 Política de Segurança](SECURITY.md) - Práticas e reporte de vulnerabilidades
+
 
 ## 🏗️ Arquitetura
 

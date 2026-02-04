@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: todo-backend
+    env: docker
+    region: oregon
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: FIREBASE_CREDENTIALS_JSON
+        sync: false
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false
+    healthCheckPath: /api/health
