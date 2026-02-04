@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+LICENSE
+
+# Frontend
+frontend/
+
+# CI/CD
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build scripts
+build.sh
+setup-firebase-env.ps1
+setup-firebase-env.sh
+
+# Render config
+render.yaml
+vercel.json
+
+# Backend specific (já que vamos copiar explicitamente)
+backend/.dockerignore
+backend/.gitignore
+backend/Dockerfile
+backend/target/
+backend/.mvn/
