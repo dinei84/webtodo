@@ -32,7 +32,7 @@ jobs:
       run: mvn test
     
     - name: Upload backend artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: backend-jar
         path: backend/target/*.jar
@@ -69,7 +69,7 @@ jobs:
         VITE_API_BASE_URL: https://todo-backend.onrender.com/api
     
     - name: Upload frontend artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6
       with:
         name: frontend-dist
         path: frontend/dist/
