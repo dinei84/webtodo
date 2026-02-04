@@ -6,7 +6,6 @@ services:
     plan: free
     branch: main
     dockerfilePath: ./Dockerfile
-    dockerContext: ./backend
     envVars:
       - key: FIREBASE_CREDENTIALS_JSON
         sync: false
