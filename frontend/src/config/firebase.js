@@ -1,14 +1,12 @@
-// Configuração do Firebase Client SDK
-// IMPORTANTE: Substitua com suas próprias credenciais do Firebase Console
-
+// Configuração do Firebase Client SDK via variáveis de ambiente do Vite.
 export const firebaseConfig = {
-    apiKey: "AIzaSyBQQLSDbaPLDN4HbCrwasu76F1he2uPjoY",
-    authDomain: "webtodo-b1aa8.firebaseapp.com",
-    projectId: "webtodo-b1aa8",
-    storageBucket: "webtodo-b1aa8.firebasestorage.app",
-    messagingSenderId: "105196394814",
-    appId: "1:105196394814:web:4ef629aa170608ca1df46f",
-    measurementId: "G-MJNYERNKMP"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || ''
 };
 
 // URL da API Backend

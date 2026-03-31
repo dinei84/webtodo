@@ -14,7 +14,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Configuração do Firebase Admin SDK.
@@ -28,6 +31,9 @@ public class FirebaseConfig {
     @Value("${firebase.credentials.path}")
     private Resource firebaseCredentials;
 
+    @Value("${FIREBASE_CREDENTIALS_JSON:}")
+    private String firebaseCredentialsJson;
+
     /**
      * Inicializa o Firebase App na inicialização da aplicação.
      */
@@ -35,8 +41,9 @@ public class FirebaseConfig {
     public void initialize() {
         try {
             if (FirebaseApp.getApps().isEmpty()) {
+                InputStream credentialsStream = resolveCredentialsStream();
                 FirebaseOptions options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(firebaseCredentials.getInputStream()))
+                        .setCredentials(GoogleCredentials.fromStream(credentialsStream))
                         .build();
 
                 FirebaseApp.initializeApp(options);
@@ -46,6 +53,16 @@ public class FirebaseConfig {
             logger.error("Erro ao inicializar Firebase Admin SDK", e);
             throw new RuntimeException("Falha ao inicializar Firebase", e);
         }
+    }
+
+    private InputStream resolveCredentialsStream() throws IOException {
+        if (firebaseCredentialsJson != null && !firebaseCredentialsJson.isBlank()) {
+            logger.info("Inicializando Firebase Admin SDK com credenciais vindas da variável FIREBASE_CREDENTIALS_JSON");
+            return new ByteArrayInputStream(firebaseCredentialsJson.getBytes(StandardCharsets.UTF_8));
+        }
+
+        logger.info("Inicializando Firebase Admin SDK com credenciais do caminho configurado: {}", firebaseCredentials);
+        return firebaseCredentials.getInputStream();
     }
 
     /**

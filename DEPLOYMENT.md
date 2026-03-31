@@ -142,6 +142,13 @@ No arquivo `frontend/.env.production`, crie:
 
 ```env
 VITE_API_BASE_URL=https://todo-backend.onrender.com/api
+VITE_FIREBASE_API_KEY=seu-api-key
+VITE_FIREBASE_AUTH_DOMAIN=seu-projeto.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=seu-project-id
+VITE_FIREBASE_STORAGE_BUCKET=seu-projeto.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=seu-messaging-sender-id
+VITE_FIREBASE_APP_ID=seu-app-id
+VITE_FIREBASE_MEASUREMENT_ID=seu-measurement-id
 ```
 
 ### 3.2 Commit as mudanças
@@ -167,6 +174,13 @@ git push origin main
 
 5. **Environment Variables**:
    - `VITE_API_BASE_URL`: `https://todo-backend.onrender.com/api`
+   - `VITE_FIREBASE_API_KEY`: valor do app web no Firebase
+   - `VITE_FIREBASE_AUTH_DOMAIN`: ex. `seu-projeto.firebaseapp.com`
+   - `VITE_FIREBASE_PROJECT_ID`: ID do projeto Firebase
+   - `VITE_FIREBASE_STORAGE_BUCKET`: bucket do projeto Firebase
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`: sender ID do app web
+   - `VITE_FIREBASE_APP_ID`: app ID do app web
+   - `VITE_FIREBASE_MEASUREMENT_ID`: opcional, se estiver usando Analytics
 
 6. Clique em **Deploy**
 
@@ -195,6 +209,14 @@ vercel
 ```bash
 vercel env add VITE_API_BASE_URL production
 # Cole: https://todo-backend.onrender.com/api
+
+vercel env add VITE_FIREBASE_API_KEY production
+vercel env add VITE_FIREBASE_AUTH_DOMAIN production
+vercel env add VITE_FIREBASE_PROJECT_ID production
+vercel env add VITE_FIREBASE_STORAGE_BUCKET production
+vercel env add VITE_FIREBASE_MESSAGING_SENDER_ID production
+vercel env add VITE_FIREBASE_APP_ID production
+vercel env add VITE_FIREBASE_MEASUREMENT_ID production
 
 vercel --prod
 ```

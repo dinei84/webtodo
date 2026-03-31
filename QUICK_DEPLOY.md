@@ -37,6 +37,13 @@ git push origin main
 4. Environment Variables:
    ```
    VITE_API_BASE_URL=https://todo-backend.onrender.com/api
+   VITE_FIREBASE_API_KEY=<apiKey do app web no Firebase>
+   VITE_FIREBASE_AUTH_DOMAIN=<authDomain do app web no Firebase>
+   VITE_FIREBASE_PROJECT_ID=<projectId do Firebase>
+   VITE_FIREBASE_STORAGE_BUCKET=<storageBucket do Firebase>
+   VITE_FIREBASE_MESSAGING_SENDER_ID=<messagingSenderId do Firebase>
+   VITE_FIREBASE_APP_ID=<appId do app web no Firebase>
+   VITE_FIREBASE_MEASUREMENT_ID=<measurementId opcional>
    ```
 5. Deploy → Copie a URL
 
