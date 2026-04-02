@@ -4,6 +4,7 @@ import com.todo.security.FirebaseAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,6 +16,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Configuração de segurança da aplicação.
@@ -40,6 +42,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/health", "/api/public/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll())
@@ -54,8 +57,15 @@ public class SecurityConfig {
         
         // Permite múltiplas origens separadas por vírgula
         if (allowedOrigins != null && allowedOrigins.length > 0) {
-            System.out.println("CORS Origins from env: " + Arrays.toString(allowedOrigins));
-            configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+            List<String> normalizedOrigins = Arrays.stream(allowedOrigins)
+                    .map(origin -> origin == null ? "" : origin.trim())
+                    .filter(origin -> !origin.isBlank())
+                    // Evita mismatch entre "https://site.com/" e Origin "https://site.com"
+                    .map(origin -> origin.endsWith("/") ? origin.substring(0, origin.length() - 1) : origin)
+                    .collect(Collectors.toList());
+
+            System.out.println("CORS Origins from env: " + normalizedOrigins);
+            configuration.setAllowedOrigins(normalizedOrigins);
         } else {
             // Fallback para desenvolvimento
             System.out.println("CORS using fallback origins");
