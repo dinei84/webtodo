@@ -51,7 +51,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        
+        // Permite múltiplas origens separadas por vírgula
+        if (allowedOrigins != null && allowedOrigins.length > 0) {
+            System.out.println("CORS Origins from env: " + Arrays.toString(allowedOrigins));
+            configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        } else {
+            // Fallback para desenvolvimento
+            System.out.println("CORS using fallback origins");
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://webtodo-pink.vercel.app"));
+        }
+        
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
