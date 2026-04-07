@@ -72,7 +72,7 @@ if (Test-Path $firebaseFile) {
     Write-Host "✅ Firebase Service Account configurado" -ForegroundColor Green
 } else {
     Write-Host "⚠️  Firebase Service Account não encontrado" -ForegroundColor Yellow
-    Write-Host "   Configure seguindo: backend\FIREBASE_SETUP.md" -ForegroundColor Gray
+    Write-Host "   Configure seguindo: docs\FIREBASE_SETUP.md" -ForegroundColor Gray
 }
 
 # Verificar configuração Firebase Frontend

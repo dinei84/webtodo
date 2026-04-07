@@ -12,9 +12,9 @@ Bem-vindo ao projeto **Todo List Full Stack**! Esta é sua central de documenta�
 3. 🎯 Siga: Os 5 passos do Quick Start
 
 ### Para Desenvolvedores Experientes
-1. 📖 Leia: **[README.md](README.md)** - Visão geral completa
+1. 📖 Leia: **[README.md](../README.md)** - Visão geral completa
 2. 🏗️ Estude: **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitetura detalhada
-3. 🔥 Configure Firebase: **[backend/FIREBASE_SETUP.md](backend/FIREBASE_SETUP.md)**
+3. 🔥 Configure Firebase: **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
 
 ---
 
@@ -23,7 +23,7 @@ Bem-vindo ao projeto **Todo List Full Stack**! Esta é sua central de documenta�
 ### 🎯 Essencial (Leia Primeiro)
 | Arquivo | Descrição | Quando Ler |
 |---------|-----------|-----------|
-| **[README.md](README.md)** | Documentação completa do projeto | Primeiro contato |
+| **[README.md](../README.md)** | Documentação completa do projeto | Primeiro contato |
 | **[QUICKSTART.md](QUICKSTART.md)** | Guia rápido (5 min) | Quer começar rápido |
 | **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** | Resumo de tudo que foi criado | Quer entender o projeto completo |
 
@@ -36,7 +36,7 @@ Bem-vindo ao projeto **Todo List Full Stack**! Esta é sua central de documenta�
 ### 🔥 Firebase e Segurança
 | Arquivo | Descrição | Quando Ler |
 |---------|-----------|-----------|
-| **[backend/FIREBASE_SETUP.md](backend/FIREBASE_SETUP.md)** | Como configurar Firebase no backend | Setup do backend |
+| **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)** | Como configurar Firebase no backend | Setup do backend |
 | **[FIRESTORE_RULES.md](FIRESTORE_RULES.md)** | Regras de segurança do Firestore | Configurar segurança |
 | **[firestore.rules](firestore.rules)** | Arquivo de regras para deploy | Deploy das regras |
 
@@ -80,17 +80,17 @@ frontend/
 
 ### Quero Instalar e Executar
 1. ✅ **[QUICKSTART.md](QUICKSTART.md)** - Passo a passo rápido
-2. ✅ **[backend/FIREBASE_SETUP.md](backend/FIREBASE_SETUP.md)** - Configurar Firebase
+2. ✅ **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)** - Configurar Firebase
 3. ✅ Execute `check-prerequisites.ps1` - Verificar instalação
 
 ### Quero Entender a Arquitetura
 1. 📐 **[ARCHITECTURE.md](ARCHITECTURE.md)** - Diagramas e fluxos
-2. 📄 **[README.md](README.md)** - Seção de Arquitetura
+2. 📄 **[README.md](../README.md)** - Seção de Arquitetura
 3. 📊 **[PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)** - Tecnologias usadas
 
 ### Quero Ver Como a UI Funciona
 1. 🎨 **[VISUAL_GUIDE.md](VISUAL_GUIDE.md)** - Mockups e fluxos visuais
-2. 📱 **[README.md](README.md)** - Seção de Design
+2. 📱 **[README.md](../README.md)** - Seção de Design
 
 ### Quero Configurar Segurança
 1. 🔒 **[FIRESTORE_RULES.md](FIRESTORE_RULES.md)** - Como aplicar regras
@@ -103,7 +103,7 @@ frontend/
 3. 💻 Código fonte - Ver exemplos existentes
 
 ### Tenho Problemas
-1. ⚠️ **[README.md](README.md)** - Seção Troubleshooting
+1. ⚠️ **[README.md](../README.md)** - Seção Troubleshooting
 2. 🔧 Execute `check-prerequisites.ps1` - Verificar instalação
 3. 📖 **[QUICKSTART.md](QUICKSTART.md)** - Problemas comuns
 
@@ -223,7 +223,7 @@ Ao completar este projeto, você terá aprendido:
 2. ⚡ **QUICKSTART.md** - Problemas comuns de setup
 3. 🔧 Execute `check-prerequisites.ps1`
 4. 📖 Consulte documentação específica:
-   - Firebase → `backend/FIREBASE_SETUP.md`
+   - Firebase → `FIREBASE_SETUP.md`
    - Segurança → `FIRESTORE_RULES.md`
    - Arquitetura → `ARCHITECTURE.md`
 
@@ -231,10 +231,10 @@ Ao completar este projeto, você terá aprendido:
 
 | Problema | Solução | Onde Ler Mais |
 |----------|---------|---------------|
-| Backend não inicia | Verificar `firebase-service-account.json` | [FIREBASE_SETUP.md](backend/FIREBASE_SETUP.md) |
+| Backend não inicia | Verificar `firebase-service-account.json` | [FIREBASE_SETUP.md](FIREBASE_SETUP.md) |
 | Frontend não conecta | Verificar `API_BASE_URL` | [QUICKSTART.md](QUICKSTART.md) |
-| Erro 401 | Token inválido ou expirado | [README.md](README.md), seção Segurança |
-| CORS error | Verificar allowed origins | [README.md](README.md), seção Configuração |
+| Erro 401 | Token inválido ou expirado | [README.md](../README.md), seção Segurança |
+| CORS error | Verificar allowed origins | [README.md](../README.md), seção Configuração |
 | Maven não encontrado | Usar mvnw ou instalar Maven | [QUICKSTART.md](QUICKSTART.md) |
 
 ---
@@ -309,10 +309,10 @@ Você tem em mãos um projeto **completo e profissional**:
 | Ver tudo | [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) |
 | Entender arquitetura | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Ver interface | [VISUAL_GUIDE.md](VISUAL_GUIDE.md) |
-| Configurar Firebase | [backend/FIREBASE_SETUP.md](backend/FIREBASE_SETUP.md) |
+| Configurar Firebase | [FIREBASE_SETUP.md](FIREBASE_SETUP.md) |
 | Configurar segurança | [FIRESTORE_RULES.md](FIRESTORE_RULES.md) |
-| Resolver problemas | [README.md](README.md) (Troubleshooting) |
-| API endpoints | [README.md](README.md) (API section) |
+| Resolver problemas | [README.md](../README.md) (Troubleshooting) |
+| API endpoints | [README.md](../README.md) (API section) |
 | Verificar instalação | `check-prerequisites.ps1` |
 
 ---
