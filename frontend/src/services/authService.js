@@ -5,9 +5,10 @@ import {
     onAuthStateChanged
 } from 'firebase/auth';
 import { auth } from './firebase';
+import { invalidateTokenCache } from './api';
 
 /**
- * Service para autenticação Firebase.
+ * Service para autenticacao Firebase.
  */
 
 // Login com email e senha
@@ -21,7 +22,7 @@ export const signIn = async (email, password) => {
     }
 };
 
-// Registro de novo usuário
+// Registro de novo usuario
 export const signUp = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -32,9 +33,10 @@ export const signUp = async (email, password) => {
     }
 };
 
-// Logout
+// Logout - invalida cache de token
 export const signOut = async () => {
     try {
+        invalidateTokenCache(); // Limpa cache do token
         await firebaseSignOut(auth);
     } catch (error) {
         console.error('Erro ao fazer logout:', error);
@@ -42,12 +44,12 @@ export const signOut = async () => {
     }
 };
 
-// Observa mudanças no estado de autenticação
+// Observa mudancas no estado de autenticacao
 export const observeAuthState = (callback) => {
     return onAuthStateChanged(auth, callback);
 };
 
-// Obtém o usuário atual
+// Obtem o usuario atual
 export const getCurrentUser = () => {
     return auth.currentUser;
 };

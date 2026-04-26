@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Service para gerenciar operações de Tasks no Firestore.
+ * Service para gerenciar operacoes de Tasks no Firestore.
+ * Otimizado: ordenacao feita no Firestore (nao em memoria).
  */
 @Service
 public class TaskService {
@@ -39,45 +41,36 @@ public class TaskService {
         task.setUpdatedAt(LocalDateTime.now());
 
         ApiFuture<WriteResult> result = docRef.set(taskToMap(task));
-        result.get(); // Aguarda a conclusão
+        result.get();
 
-        logger.info("Task criada com ID: {} para usuário: {}", task.getId(), task.getUserId());
+        logger.info("Task criada com ID: {} para usuario: {}", task.getId(), task.getUserId());
         return task;
     }
 
     /**
-     * Busca todas as tasks de um usuário específico.
+     * Busca todas as tasks de um usuario especifico.
+     * OTIMIZADO: ordenacao feita no Firestore (nao em memoria).
+     * REQUER INDICE COMPOSTO: userId (ASC) + createdAt (DESC)
      */
     public List<Task> getTasksByUserId(String userId) throws ExecutionException, InterruptedException {
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("userId", userId)
+                .orderBy("createdAt", Direction.DESCENDING)
                 .get();
 
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-        List<Task> tasks = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>(documents.size());
 
         for (QueryDocumentSnapshot document : documents) {
             tasks.add(documentToTask(document));
         }
 
-        // Ordena em memória por createdAt (mais recente primeiro)
-        tasks.sort((t1, t2) -> {
-            if (t1.getCreatedAt() == null && t2.getCreatedAt() == null)
-                return 0;
-            if (t1.getCreatedAt() == null)
-                return 1;
-            if (t2.getCreatedAt() == null)
-                return -1;
-            return t2.getCreatedAt().compareTo(t1.getCreatedAt());
-        });
-
-        logger.debug("Encontradas {} tasks para usuário: {}", tasks.size(), userId);
+        logger.debug("Encontradas {} tasks para usuario: {}", tasks.size(), userId);
         return tasks;
     }
 
     /**
-     * Busca uma task específica por ID.
-     * Retorna null se a task não existir ou não pertencer ao usuário.
+     * Busca uma task especifica por ID.
      */
     public Task getTaskById(String taskId, String userId) throws ExecutionException, InterruptedException {
         DocumentSnapshot document = firestore.collection(COLLECTION_NAME)
@@ -91,9 +84,8 @@ public class TaskService {
 
         Task task = documentToTask(document);
 
-        // Verifica se a task pertence ao usuário
         if (!task.getUserId().equals(userId)) {
-            logger.warn("Tentativa de acesso não autorizado à task {} por usuário {}", taskId, userId);
+            logger.warn("Tentativa de acesso nao autorizado a task {} por usuario {}", taskId, userId);
             return null;
         }
 
@@ -106,11 +98,14 @@ public class TaskService {
     public Task updateTask(String taskId, String userId, Task updatedTask)
             throws ExecutionException, InterruptedException {
 
+
         Task existingTask = getTaskById(taskId, userId);
+
 
         if (existingTask == null) {
             return null;
         }
+
 
         updatedTask.setId(taskId);
         updatedTask.setUserId(userId);
@@ -118,7 +113,7 @@ public class TaskService {
         updatedTask.setUpdatedAt(LocalDateTime.now());
 
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document(taskId);
-        ApiFuture<WriteResult> result = docRef.set(taskToMap(updatedTask));
+        ApiFuture<WriteResult> result = docRef.set(taskToMap(updatedTask), SetOptions.merge());
         result.get();
 
         logger.info("Task {} atualizada com sucesso", taskId);
@@ -144,9 +139,6 @@ public class TaskService {
         return true;
     }
 
-    /**
-     * Converte Task para Map (para salvar no Firestore).
-     */
     private Map<String, Object> taskToMap(Task task) {
         Map<String, Object> map = new HashMap<>();
         map.put("userId", task.getUserId());
@@ -160,9 +152,6 @@ public class TaskService {
         return map;
     }
 
-    /**
-     * Converte DocumentSnapshot para Task.
-     */
     private Task documentToTask(DocumentSnapshot document) {
         Task task = new Task();
         task.setId(document.getId());

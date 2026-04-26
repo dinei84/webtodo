@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getTasks, createTask, updateTask, deleteTask, toggleTaskCompletion } from '../services/taskService';
 import TaskItem from './TaskItem';
 import TaskForm from './TaskForm';
@@ -31,7 +31,7 @@ const TodoList = () => {
     const handleCreateTask = async (taskData) => {
         try {
             const newTask = await createTask(taskData);
-            setTasks([newTask, ...tasks]);
+            setTasks(prev => [newTask, ...prev]);
             return true;
         } catch (err) {
             console.error('Erro ao criar tarefa:', err);
@@ -43,17 +43,18 @@ const TodoList = () => {
     const handleUpdateTask = async (id, taskData) => {
         try {
             const updatedTask = await updateTask(id, taskData);
-            setTasks(tasks.map(task => task.id === id ? updatedTask : task));
+            setTasks(prev => prev.map(task => task.id === id ? updatedTask : task));
         } catch (err) {
             console.error('Erro ao atualizar tarefa:', err);
             setError('Erro ao atualizar tarefa. Tente novamente.');
         }
     };
 
+
     const handleToggleTask = async (task) => {
         try {
             const updatedTask = await toggleTaskCompletion(task);
-            setTasks(tasks.map(t => t.id === task.id ? updatedTask : t));
+            setTasks(prev => prev.map(t => t.id === task.id ? updatedTask : t));
         } catch (err) {
             console.error('Erro ao alternar tarefa:', err);
             setError('Erro ao atualizar tarefa. Tente novamente.');
@@ -64,17 +65,17 @@ const TodoList = () => {
         if (!window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
             return;
         }
-
         try {
             await deleteTask(id);
-            setTasks(tasks.filter(task => task.id !== id));
+            setTasks(prev => prev.filter(task => task.id !== id));
         } catch (err) {
             console.error('Erro ao deletar tarefa:', err);
             setError('Erro ao deletar tarefa. Tente novamente.');
         }
     };
 
-    const getFilteredTasks = () => {
+    // OTIMIZADO: useMemo para filteredTasks - recalcula apenas quando tasks ou filter mudam
+    const filteredTasks = useMemo(() => {
         switch (filter) {
             case 'active':
                 return tasks.filter(task => !task.completed);
@@ -83,14 +84,14 @@ const TodoList = () => {
             default:
                 return tasks;
         }
-    };
+    }, [tasks, filter]);
 
-    const filteredTasks = getFilteredTasks();
-    const stats = {
-        total: tasks.length,
-        active: tasks.filter(t => !t.completed).length,
-        completed: tasks.filter(t => t.completed).length,
-    };
+    // OTIMIZADO: useMemo para stats - recalcula apenas quando tasks mudam
+    const stats = useMemo(() => {
+        const total = tasks.length;
+        const active = tasks.filter(t => !t.completed).length;
+        return { total, active, completed: total - active };
+    }, [tasks]);
 
     if (loading) {
         return <div className="loading">Carregando tarefas...</div>;
@@ -113,7 +114,7 @@ const TodoList = () => {
                 </div>
                 <div className="stat">
                     <span className="stat-value">{stats.completed}</span>
-                    <span className="stat-label">Concluídas</span>
+                    <span className="stat-label">Concluidas</span>
                 </div>
             </div>
 
@@ -134,18 +135,18 @@ const TodoList = () => {
                     className={filter === 'completed' ? 'active' : ''}
                     onClick={() => setFilter('completed')}
                 >
-                    Concluídas
+                    Concluidas
                 </button>
             </div>
 
             <div className="tasks-list">
                 {filteredTasks.length === 0 ? (
                     <div className="empty-state">
-                        <p>📭 Nenhuma tarefa encontrada</p>
+                        <p>Nenhuma tarefa encontrada</p>
                         <p className="empty-subtitle">
                             {filter === 'all'
                                 ? 'Adicione uma nova tarefa acima'
-                                : `Nenhuma tarefa ${filter === 'active' ? 'ativa' : 'concluída'}`
+                                : `Nenhuma tarefa ${filter === 'active' ? 'ativa' : 'concluida'}`
                             }
                         </p>
                     </div>
