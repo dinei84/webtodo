@@ -1,5 +1,6 @@
-package com.todo.controller;
+﻿package com.todo.controller;
 
+import com.todo.dto.PageResponse;
 import com.todo.dto.TaskDTO;
 import com.todo.model.Task;
 import com.todo.security.UserPrincipal;
@@ -17,27 +18,55 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * Controller REST para gerenciar Tasks.
- * Todos os endpoints requerem autenticação via Firebase Token.
+ * OTIMIZADO: paginacao server-side se > 100 tasks.
+ * Todos os endpoints requerem autenticaÃ§ao via Firebase Token.
  */
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+    private static final int DEFAULT_PAGE_SIZE = 50;
+    private static final int MAX_PAGE_SIZE = 100;
+
     private final TaskService taskService;
 
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
+
     /**
-     * GET /api/tasks - Lista todas as tasks do usuário autenticado
+     * GET /api/tasks - Lista tasks do usuario com paginacao server-side.
+     * Se total <= 100: retorna todas as tasks de uma vez.
+     * Se total > 100: usa paginacao com page e size.
      */
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks(@AuthenticationPrincipal UserPrincipal user) {
+    public ResponseEntity<?> getAllTasks(
+            @AuthenticationPrincipal UserPrincipal user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+
         try {
-            List<Task> tasks = taskService.getTasksByUserId(user.getUid());
-            return ResponseEntity.ok(tasks);
+            size = Math.min(size, MAX_PAGE_SIZE);
+            TaskService.TaskQueryResult result = taskService.getTasksByUserIdPaginated(
+                    user.getUid(), page, size);
+
+            if (!result.isPaginated()) {
+                // Sem paginacao: retorna lista simples (retrocompatibilidade)
+                return ResponseEntity.ok(result.getTasks());
+            }
+
+            // Com paginacao: retorna PageResponse
+            PageResponse<Task> response = PageResponse.of(
+                    result.getTasks(),
+                    result.getPage(),
+                    result.getSize(),
+                    result.getTotalElements()
+            );
+
+
+            return ResponseEntity.ok(response);
         } catch (ExecutionException | InterruptedException e) {
             logger.error("Erro ao buscar tasks", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -45,13 +74,32 @@ public class TaskController {
     }
 
     /**
-     * GET /api/tasks/{id} - Busca uma task específica
+     * GET /api/tasks/count - Retorna total de tasks do usuario.
+     * UTIL: para o frontend saber se deve usar paginacao.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<?> getTaskCount(@AuthenticationPrincipal UserPrincipal user) {
+        try {
+            long count = taskService.countTasksByUserId(user.getUid());
+            return ResponseEntity.ok(java.util.Map.of(
+                    "count", count,
+                    "paginated", count > 100
+            ));
+        } catch (ExecutionException | InterruptedException e) {
+            logger.error("Erro ao contar tasks", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    /**
+     * GET /api/tasks/{id} - Busca uma task especifica
      */
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable String id,
             @AuthenticationPrincipal UserPrincipal user) {
         try {
             Task task = taskService.getTaskById(id, user.getUid());
+
 
             if (task == null) {
                 return ResponseEntity.notFound().build();
@@ -107,6 +155,7 @@ public class TaskController {
             if (updatedTask == null) {
                 return ResponseEntity.notFound().build();
             }
+
 
             return ResponseEntity.ok(updatedTask);
         } catch (ExecutionException | InterruptedException e) {
