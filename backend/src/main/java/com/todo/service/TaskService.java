@@ -4,6 +4,8 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.Query.Direction;
 import com.todo.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,7 +156,6 @@ public class TaskService {
     public long countTasksByUserId(String userId) throws ExecutionException, InterruptedException {
         ApiFuture<QuerySnapshot> future = firestore.collection(COLLECTION_NAME)
                 .whereEqualTo("userId", userId)
-                .select()
                 .get();
 
         return future.get().getDocuments().size();
@@ -193,7 +195,7 @@ public class TaskService {
 
         Task task = documentToTask(document);
 
-        if (!task.getUserId().equals(userId)) {
+        if (task == null || !task.getUserId().equals(userId)) {
             logger.warn("Tentativa de acesso nao autorizado a task {} por usuario {}", taskId, userId);
             return null;
         }
@@ -262,9 +264,9 @@ public class TaskService {
         map.put("title", task.getTitle());
         map.put("description", task.getDescription());
         map.put("completed", task.isCompleted());
-        map.put("createdAt", task.getCreatedAt() != null ? task.getCreatedAt().toString() : null);
-        map.put("updatedAt", task.getUpdatedAt() != null ? task.getUpdatedAt().toString() : null);
-        map.put("dueDate", task.getDueDate() != null ? task.getDueDate().toString() : null);
+        map.put("createdAt", task.getCreatedAt() != null ? task.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
+        map.put("updatedAt", task.getUpdatedAt() != null ? task.getUpdatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
+        map.put("dueDate", task.getDueDate() != null ? task.getDueDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
         map.put("priority", task.getPriority());
         return map;
     }
