@@ -14,6 +14,9 @@ RUN mvn clean package -DskipTests
 # Imagem final menor
 FROM eclipse-temurin:17-jre-alpine
 
+# Instalar wget para o healthcheck
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
 # Copiar apenas o JAR da etapa de build

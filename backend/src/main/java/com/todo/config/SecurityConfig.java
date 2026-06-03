@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,23 +56,36 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permite múltiplas origens separadas por vírgula
+        List<String> origins;
+        
         if (allowedOrigins != null && allowedOrigins.length > 0) {
-            List<String> normalizedOrigins = Arrays.stream(allowedOrigins)
+            origins = Arrays.stream(allowedOrigins)
                     .map(origin -> origin == null ? "" : origin.trim())
                     .filter(origin -> !origin.isBlank())
-                    // Evita mismatch entre "https://site.com/" e Origin "https://site.com"
                     .map(origin -> origin.endsWith("/") ? origin.substring(0, origin.length() - 1) : origin)
                     .collect(Collectors.toList());
-
-            System.out.println("CORS Origins from env: " + normalizedOrigins);
-            configuration.setAllowedOrigins(normalizedOrigins);
         } else {
-            // Fallback para desenvolvimento
-            System.out.println("CORS using fallback origins");
-            configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://webtodo-pink.vercel.app"));
+            origins = Collections.emptyList();
+        }
+
+        if (origins.isEmpty()) {
+            String profile = System.getProperty("spring.profiles.active", "default");
+            if ("production".equals(profile)) {
+                System.err.println("============================================");
+                System.err.println("ERRO: ALLOWED_ORIGINS não configurado em produção!");
+                System.err.println("Configure a variável ALLOWED_ORIGINS no Render");
+                System.err.println("com a URL do seu frontend no Vercel.");
+                System.err.println("Ex: https://seu-app.vercel.app");
+                System.err.println("============================================");
+            } else {
+                origins = Arrays.asList("http://localhost:3000", "http://localhost:5173");
+                System.out.println("CORS (dev): " + origins);
+            }
+        } else {
+            System.out.println("CORS configurado com origens: " + origins);
         }
         
+        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

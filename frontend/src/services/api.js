@@ -56,27 +56,40 @@ api.interceptors.response.use(
         if (error.response) {
             switch (error.response.status) {
                 case 401:
-                    // Token invalido - limpa cache
                     cachedToken = null;
                     tokenExpiresAt = 0;
-                    console.error('Nao autenticado. Faca login novamente.');
+                    window.dispatchEvent(new CustomEvent('app:error', { 
+                        detail: { message: 'Sessão expirada. Faça login novamente.' }
+                    }));
                     break;
                 case 403:
-                    console.error('Acesso negado.');
+                    window.dispatchEvent(new CustomEvent('app:error', { 
+                        detail: { message: 'Acesso negado a este recurso.' }
+                    }));
                     break;
                 case 404:
-                    console.error('Recurso nao encontrado.');
+                    window.dispatchEvent(new CustomEvent('app:error', { 
+                        detail: { message: 'Recurso não encontrado.' }
+                    }));
                     break;
                 case 500:
-                    console.error('Erro interno do servidor.');
+                    window.dispatchEvent(new CustomEvent('app:error', { 
+                        detail: { message: 'Erro interno do servidor. Tente novamente em instantes.' }
+                    }));
                     break;
                 default:
-                    console.error('Erro na requisicao:', error.response.data);
+                    window.dispatchEvent(new CustomEvent('app:error', { 
+                        detail: { message: 'Erro na requisição. Tente novamente.' }
+                    }));
             }
         } else if (error.request) {
-            console.error('Sem resposta do servidor:', error.request);
+            window.dispatchEvent(new CustomEvent('app:error', { 
+                detail: { message: 'Servidor não está respondendo. O backend pode estar "acordando" (até 30s no plano gratuito).' }
+            }));
         } else {
-            console.error('Erro:', error.message);
+            window.dispatchEvent(new CustomEvent('app:error', { 
+                detail: { message: 'Erro de conexão. Verifique sua internet.' }
+            }));
         }
         return Promise.reject(error);
     }

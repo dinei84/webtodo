@@ -33,8 +33,7 @@ export default defineConfig({
                 },
             },
         },
-        // Compressao do chunk final
-        minify: 'terser',
+        // Compressao do chunk final (esbuild — padrão do Vite, mais rápido)
         sourcemap: false,
     },
 })

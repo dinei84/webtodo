@@ -238,6 +238,26 @@ Volte ao Render e atualize a variável `ALLOWED_ORIGINS`:
 
 ---
 
+### Índice Composto do Firestore (OBRIGATÓRIO)
+
+⚠️ **Este passo é essencial!** Sem ele as queries de tasks vão falhar.
+
+O backend usa `.whereEqualTo("userId").orderBy("createdAt", DESC)` que exige um índice composto no Firestore:
+
+1. Acesse [Firebase Console](https://console.firebase.google.com/) → seu projeto
+2. Vá em **Firestore Database** → aba **Indexes** → **Add Index**
+3. Configure:
+   - **Collection ID**: `tasks`
+   - **Fields**:
+     - `userId` → **Ascending**
+     - `createdAt` → **Descending**
+   - **Query scope**: Collection
+4. Clique em **Create** e aguarde ~2-5 minutos para o índice ser criado
+
+> 💡 **Dica**: Você também pode fazer uma requisição GET para `/api/tasks` e o erro retornado conterá um link direto para criar o índice automaticamente.
+
+---
+
 ## ✅ Parte 5: Testar a Aplicação
 
 1. Acesse sua URL do Vercel

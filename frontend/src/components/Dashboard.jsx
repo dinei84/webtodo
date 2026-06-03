@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import TodoList from './TodoList';
+import { ErrorMessage } from './ErrorMessage';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard-container">
+            <ErrorMessage />
             <header className="dashboard-header">
                 <div className="header-content">
                     <h1>📝 Minhas Tarefas</h1>
